@@ -1,2 +1,1 @@
-# koyote
-Simple and Functional Gitlab Event Notification bot
+# Koyote - fast Gitlab Event Notification for Telegram
