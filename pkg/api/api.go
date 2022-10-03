@@ -6,6 +6,7 @@ import (
 
 	log "github.com/gookit/slog"
 	"github.com/gorilla/mux"
+	"github.com/koyote-github/pkg/events"
 )
 
 func receiveEventJSON(w http.ResponseWriter, r *http.Request) {
@@ -16,14 +17,13 @@ func receiveEventJSON(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("%v", err)
 	}
 
-	log.Info(body)
+	events.EventMatcher(body)
 }
 
-func InitialiseAPI() {
-	log.Info("Launching API and Loading configuration")
+func StartPolling() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/notify", receiveEventJSON).Methods("POST")
 
-	log.Info("Configuration Loaded! Starting API ...")
+	log.Info("Starting API on port 8081")
 	log.Fatal(http.ListenAndServe(":8081", router))
 }

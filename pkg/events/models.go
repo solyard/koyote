@@ -1,6 +1,10 @@
-package models
+package events
 
 import "time"
+
+type GitlabEventTypeDetector struct {
+	ObjectKind string `json:"object_kind"`
+}
 
 type GitlabPushEvent struct {
 	ObjectKind   string      `json:"object_kind"`

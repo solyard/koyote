@@ -1,6 +1,6 @@
 module github.com/koyote-github
 
-go 1.17
+go 1.19
 
 require (
 	github.com/gookit/slog v0.3.3
