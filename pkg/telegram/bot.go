@@ -18,12 +18,15 @@ func StartBot() {
 		log.Fatal(err)
 	}
 
+	log.Info("Telegram bot started!")
+	Bot = bot
 	// Start Polling
 	_, _ = bot.UpdatesViaLongPulling(nil)
 	defer bot.StopLongPulling()
 }
 
-func sendEventMessage(chatID int64, eventMessage string) {
+func SendEventMessage(chatID int64, eventMessage string) {
+	log.Info("Received event message. Error: ", eventMessage)
 	Bot.SendMessage(
 		tu.Message(
 			tu.ID(chatID),

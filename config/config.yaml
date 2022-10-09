@@ -1,5 +1,4 @@
 global:
-  telegram_bot_token: "" # Telegram Bot token from @BotFather
   listen_port: "8081" # Port for API. On this port you will receive events from Gitlab
 events:
   job: true # Enable notification about Job event
@@ -7,9 +6,7 @@ events:
   note: true # Enable notification about Note event
   pipeline: true # Enable notification about Pipeline event
   push: true # Enable notification about Push event
-  tag_push: true # Enable notification about Tag Push event
-notification:
-  telegram: true # Enable Telegram notification (This option always need to be "true")
+  tag_push: false # Enable notification about Tag Push event
 redis:
   enabled: false # If you want to use redis as task pool set this parameter to true
   host: ""

@@ -5,6 +5,7 @@ import (
 	"fmt"
 
 	log "github.com/gookit/slog"
+	"github.com/koyote/pkg/telegram"
 )
 
 type Event interface {
@@ -68,7 +69,8 @@ func EventMatcher(eventJSON []byte) {
 		log.Error("Error while compare event with struct", err)
 		return
 	}
-	log.Info(event.TemplateMessage())
+	//log.Info(event.TemplateMessage())
+	telegram.SendEventMessage(129913666, event.TemplateMessage())
 }
 
 func eventComparator(eventType string, data []byte) (Event, error) {

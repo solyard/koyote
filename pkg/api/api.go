@@ -6,7 +6,7 @@ import (
 
 	log "github.com/gookit/slog"
 	"github.com/gorilla/mux"
-	"github.com/koyote-github/pkg/events"
+	"github.com/koyote/pkg/events"
 )
 
 func receiveEventJSON(w http.ResponseWriter, r *http.Request) {

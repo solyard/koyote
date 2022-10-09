@@ -1,3 +1,5 @@
+🛠 BUILD
+---
 {{ $status := .BuildStatus }}
 {{- if eq $status "success" -}} 🟢 SUCCESS {{ else }} 🔴 FAILURE {{- end }} {{ $status := .BuildStatus}}
 Event: {{ .ObjectKind | ToUpper}}
