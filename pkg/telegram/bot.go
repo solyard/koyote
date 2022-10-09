@@ -4,6 +4,8 @@ import (
 	"os"
 
 	log "github.com/gookit/slog"
+	"github.com/koyote/pkg/config"
+	"github.com/koyote/pkg/redis"
 	"github.com/mymmrac/telego"
 	tu "github.com/mymmrac/telego/telegoutil"
 )
@@ -27,10 +29,15 @@ func StartBot() {
 
 func SendEventMessage(chatID int64, eventMessage string) {
 	log.Info("Received event message. Error: ", eventMessage)
-	Bot.SendMessage(
+	_, err := Bot.SendMessage(
 		tu.Message(
 			tu.ID(chatID),
 			eventMessage,
 		),
 	)
+	if err != nil && config.GlobalAppConfig.Redis.Enabled {
+		log.Error("Error while sending message to telegram. Save task in Redis. Error: ", err)
+		redis.SaveEventMessageToCache(chatID, eventMessage)
+		return
+	}
 }

@@ -4,6 +4,7 @@ import (
 	"log"
 	"os"
 
+	"github.com/koyote/pkg/redis"
 	"gopkg.in/yaml.v3"
 )
 
@@ -30,19 +31,22 @@ type ApplicationConfig struct {
 	} `yaml:"redis"`
 }
 
-func LoadConfig() (*ApplicationConfig, error) {
+var GlobalAppConfig ApplicationConfig
+
+func LoadConfig() {
 	configFile, err := os.ReadFile("config/config.yaml")
 	if err != nil {
 		log.Fatal("Error while reading application config file. Application crashed. Error: ", err)
-		return nil, err
+		return
 	}
 
-	var config ApplicationConfig
-	err = yaml.Unmarshal(configFile, &config)
+	err = yaml.Unmarshal(configFile, &GlobalAppConfig)
 	if err != nil {
 		log.Fatal("Error while unmarshal application config to struct. Error: ", err)
-		return nil, err
+		return
 	}
 
-	return &config, nil
+	if GlobalAppConfig.Redis.Enabled {
+		redis.ConnectToRedis()
+	}
 }
