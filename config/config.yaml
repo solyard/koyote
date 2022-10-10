@@ -1,0 +1,16 @@
+global:
+  listen_port: "8081" # Port for API. On this port you will receive events from Gitlab
+events:
+  job: true # Enable notification about Job event
+  merge_request: true # Enable notification about Merge Request event
+  note: true # Enable notification about Note event
+  pipeline: true # Enable notification about Pipeline event
+  push: true # Enable notification about Push event
+  tag_push: false # Enable notification about Tag Push event
+redis:
+  enabled: false # If you want to use redis as task pool set this parameter to true
+  host: ""
+  port: ""
+  auth: # If you Redis have enabled authorization please provide username and password below 
+    username: ""
+    password: ""
