@@ -9,6 +9,8 @@ events:
   tag_push: false # Enable notification about Tag Push event
 redis:
   enabled: false # If you want to use redis as task pool set this parameter to true
+  check_unsended_events_interval: 300 # Check unsendend message in cache interval timer 
+  unsendend_task_ttl: 600 # TTL for unsendend messages in cache (seconds)
   host: ""
   port: ""
   auth: # If you Redis have enabled authorization please provide username and password below 

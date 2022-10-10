@@ -35,6 +35,7 @@ func SendEventMessage(chatID int64, eventMessage string) {
 			eventMessage,
 		),
 	)
+
 	if err != nil && config.GlobalAppConfig.Redis.Enabled {
 		log.Error("Error while sending message to telegram. Save task in Redis. Error: ", err)
 		redis.SaveEventMessageToCache(chatID, eventMessage)

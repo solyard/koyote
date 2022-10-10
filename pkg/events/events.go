@@ -3,6 +3,7 @@ package events
 import (
 	"encoding/json"
 	"fmt"
+	"strconv"
 
 	log "github.com/gookit/slog"
 	"github.com/koyote/pkg/telegram"
@@ -57,7 +58,7 @@ func (e GitlabPushEvent) TemplateMessage() string {
 	return result
 }
 
-func EventMatcher(eventJSON []byte) {
+func EventMatcher(eventJSON []byte, chatID string) {
 	var receivedEventType GitlabEventTypeDetector
 	err := json.Unmarshal(eventJSON, &receivedEventType)
 	if err != nil {
@@ -69,8 +70,13 @@ func EventMatcher(eventJSON []byte) {
 		log.Error("Error while compare event with struct", err)
 		return
 	}
-	//log.Info(event.TemplateMessage())
-	telegram.SendEventMessage(129913666, event.TemplateMessage())
+
+	chatIDInt, err := strconv.Atoi(chatID)
+	if err != nil {
+		log.Error("Error while convert chat ID to INT: %v", err)
+	}
+
+	telegram.SendEventMessage(int64(chatIDInt), event.TemplateMessage())
 }
 
 func eventComparator(eventType string, data []byte) (Event, error) {

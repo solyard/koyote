@@ -4,7 +4,6 @@ import (
 	"log"
 	"os"
 
-	"github.com/koyote/pkg/redis"
 	"gopkg.in/yaml.v3"
 )
 
@@ -21,10 +20,12 @@ type ApplicationConfig struct {
 		TagPush      bool `yaml:"tag_push"`
 	} `yaml:"events"`
 	Redis struct {
-		Enabled bool   `yaml:"enabled"`
-		Host    string `yaml:"host"`
-		Port    string `yaml:"port"`
-		Auth    struct {
+		Enabled                     bool   `yaml:"enabled"`
+		CheckUnsendedEventsInterval int    `yaml:"check_unsended_events_interval"`
+		UnsendendTaskTTL            int    `yaml:"unsendend_task_ttl"`
+		Host                        string `yaml:"host"`
+		Port                        string `yaml:"port"`
+		Auth                        struct {
 			Username string `yaml:"username"`
 			Password string `yaml:"password"`
 		} `yaml:"auth"`
@@ -44,9 +45,5 @@ func LoadConfig() {
 	if err != nil {
 		log.Fatal("Error while unmarshal application config to struct. Error: ", err)
 		return
-	}
-
-	if GlobalAppConfig.Redis.Enabled {
-		redis.ConnectToRedis()
 	}
 }
