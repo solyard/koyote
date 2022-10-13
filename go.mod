@@ -3,11 +3,12 @@ module github.com/koyote
 go 1.19
 
 require (
+	github.com/caarlos0/env/v6 v6.10.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gookit/slog v0.3.3
 	github.com/gorilla/mux v1.8.0
+	github.com/jasonlvhit/gocron v0.0.1
 	github.com/mymmrac/telego v0.16.1
-	gopkg.in/yaml.v3 v3.0.1
 )
 
 require (

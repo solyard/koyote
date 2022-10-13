@@ -2,10 +2,15 @@ package redis
 
 import (
 	"context"
+	"crypto/rand"
+	"fmt"
+	"math/big"
 	"time"
 
 	"github.com/go-redis/redis/v8"
 	log "github.com/gookit/slog"
+	"github.com/jasonlvhit/gocron"
+	"github.com/koyote/pkg/config"
 )
 
 var ctx = context.Background()
@@ -24,12 +29,23 @@ func ConnectToRedis() {
 	}
 
 	log.Info("Redis connection established!")
+
+	cronInterval := config.GlobalAppConfig.Redis.CheckUnsendedEventsInterval
+
+	gocron.NewJob(uint64(cronInterval) * uint64(time.Second)).Do(EventScheduleCheckAndResendToTelegram)
 }
 
 func SaveEventMessageToCache(chatID int64, message string) {
-	err := redisClient.Set(ctx, string(chatID), message, 60*time.Minute)
+	randomKey, err := rand.Int(rand.Reader, big.NewInt(100))
+	cacheTTL := config.GlobalAppConfig.Redis.UnsendendTaskTTL
+	redisClient.Set(ctx, fmt.Sprintf("%v-%v", string(chatID), randomKey), message, time.Duration(cacheTTL)*time.Second)
 	if err != nil {
 		log.Error("Error while saving task into redis. Message can be lost. Error: ", err)
 		return
 	}
+}
+
+func EventScheduleCheckAndResendToTelegram(chatID int64) {
+	log.Info("STUB for event task iteration from redis")
+	return
 }
