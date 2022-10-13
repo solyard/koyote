@@ -8,10 +8,10 @@ import (
 )
 
 func main() {
-	go telegram.StartBot()
 	config.LoadConfig()
-	api.StartPolling()
 	if config.GlobalAppConfig.Redis.Enabled {
 		redis.ConnectToRedis()
 	}
+	go telegram.StartBot()
+	api.StartPolling()
 }

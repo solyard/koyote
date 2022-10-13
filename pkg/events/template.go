@@ -92,7 +92,6 @@ func templatePipelineEventMessage(gitlabEvent GitlabPipelineEvent, fileName stri
 	var message bytes.Buffer
 	err = template.Execute(&message, gitlabEvent)
 	if err != nil {
-		log.Error("Error while executing template. Error: ", err)
 		return "", err
 	}
 

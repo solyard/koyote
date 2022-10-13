@@ -10,52 +10,52 @@ import (
 )
 
 type Event interface {
-	TemplateMessage() string
+	TemplateMessage() (string, error)
 }
 
-func (e GitlabJobEvent) TemplateMessage() string {
+func (e GitlabJobEvent) TemplateMessage() (string, error) {
 	result, err := templateJobEventMessage(e, "job.tpl")
 	if err != nil {
-		log.Error("Error while receiving message from templator. Error: ", err)
+		return "", err
 	}
 
-	return result
+	return result, nil
 }
 
-func (e GitlabMergeRequestEvent) TemplateMessage() string {
+func (e GitlabMergeRequestEvent) TemplateMessage() (string, error) {
 	result, err := templateMREventMessage(e, "merge_request.tpl")
 	if err != nil {
-		log.Error("Error while receiving message from templator. Error: ", err)
+		return "", err
 	}
 
-	return result
+	return result, nil
 }
 
-func (e GitlabNoteEvent) TemplateMessage() string {
+func (e GitlabNoteEvent) TemplateMessage() (string, error) {
 	result, err := templateNoteEventMessage(e, "note.tpl")
 	if err != nil {
-		log.Error("Error while receiving message from templator. Error: ", err)
+		return "", err
 	}
 
-	return result
+	return result, nil
 }
 
-func (e GitlabPipelineEvent) TemplateMessage() string {
+func (e GitlabPipelineEvent) TemplateMessage() (string, error) {
 	result, err := templatePipelineEventMessage(e, "pipeline.tpl")
 	if err != nil {
-		log.Error("Error while receiving message from templator. Error: ", err)
+		return "", err
 	}
 
-	return result
+	return result, nil
 }
 
-func (e GitlabPushEvent) TemplateMessage() string {
+func (e GitlabPushEvent) TemplateMessage() (string, error) {
 	result, err := templatePushEventMessage(e, "push.tpl")
 	if err != nil {
-		log.Error("Error while receiving message from templator. Error: ", err)
+		return "", err
 	}
 
-	return result
+	return result, nil
 }
 
 func EventMatcher(eventJSON []byte, chatID string) {
@@ -63,6 +63,7 @@ func EventMatcher(eventJSON []byte, chatID string) {
 	err := json.Unmarshal(eventJSON, &receivedEventType)
 	if err != nil {
 		log.Error("Cannot unmarshal received event to GitlabTypeDetector structure. Error: ", err)
+		return
 	}
 
 	event, err := eventComparator(receivedEventType.ObjectKind, eventJSON)
@@ -74,9 +75,16 @@ func EventMatcher(eventJSON []byte, chatID string) {
 	chatIDInt, err := strconv.Atoi(chatID)
 	if err != nil {
 		log.Error("Error while convert chat ID to INT: %v", err)
+		return
 	}
 
-	telegram.SendEventMessage(int64(chatIDInt), event.TemplateMessage())
+	eventMessage, err := event.TemplateMessage()
+	if err != nil {
+		log.Error("Error while templating event from received message. Error: ", err)
+		return
+	}
+
+	telegram.SendEventMessage(int64(chatIDInt), eventMessage)
 }
 
 func eventComparator(eventType string, data []byte) (Event, error) {
