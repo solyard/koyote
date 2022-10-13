@@ -4,7 +4,8 @@
 
 <p align="center"><b>Koyote - Fast Gitlab Event Notification for Telegram</b></p>
 
-<p align="center"><a href="https://www.flaticon.com/ru/free-icons/" title="волк иконки">Logo from Freepik - Flaticon</a></p>
+<hr>
+<p align="center"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white"><img src="https://img.shields.io/badge/GitLab-330F63?style=for-the-badge&logo=gitlab&logoColor=white"><img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white"></p>
 
 
 # FYI
@@ -49,5 +50,5 @@ docker run -p 8081:8081 koyote:v0.1 -e KOYOTE_API_PORT=8081 -e KOYOTE_TELEGRAM_B
 - [ ] ...
 
 
-<hr>
-<p align="center"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white"><img src="https://img.shields.io/badge/GitLab-330F63?style=for-the-badge&logo=gitlab&logoColor=white"><img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white"></p>
+<p align="center"><a href="https://www.flaticon.com/ru/free-icons/" title="волк иконки">Logo from Freepik - Flaticon</a></p>
+
