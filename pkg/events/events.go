@@ -6,6 +6,8 @@ import (
 	"strconv"
 
 	log "github.com/gookit/slog"
+	"github.com/koyote/pkg/config"
+	"github.com/koyote/pkg/redis"
 	"github.com/koyote/pkg/telegram"
 )
 
@@ -84,7 +86,15 @@ func EventMatcher(eventJSON []byte, chatID string) {
 		return
 	}
 
-	telegram.SendEventMessage(int64(chatIDInt), eventMessage)
+	err = telegram.SendEventMessage(int64(chatIDInt), eventMessage)
+	if err != nil && config.GlobalAppConfig.Redis.Enabled {
+		log.Error("Error while sending message to telegram. Save task in Redis. Error: ", err)
+		redis.SaveEventMessageToCache(int64(chatIDInt), eventMessage)
+		return
+	} else if err != nil {
+		log.Error("Error while sending message to telegram. Redis disabled so you missed this message in telegram. Error: ", err)
+		return
+	}
 }
 
 func eventComparator(eventType string, data []byte) (Event, error) {

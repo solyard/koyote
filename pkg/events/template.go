@@ -31,7 +31,6 @@ func prepareTemplate(eventType, templateFilePath string) (*template.Template, er
 func templateJobEventMessage(gitlabEvent GitlabJobEvent, fileName string) (string, error) {
 	template, err := prepareTemplate(gitlabEvent.ObjectKind, fileName)
 	if err != nil {
-		log.Error("Error while preparing template for event. Error: ", err)
 		return "", err
 	}
 
@@ -49,7 +48,6 @@ func templateJobEventMessage(gitlabEvent GitlabJobEvent, fileName string) (strin
 func templateMREventMessage(gitlabEvent GitlabMergeRequestEvent, fileName string) (string, error) {
 	template, err := prepareTemplate(gitlabEvent.ObjectKind, fileName)
 	if err != nil {
-		log.Error("Error while preparing template for event. Error: ", err)
 		return "", err
 	}
 
@@ -67,7 +65,6 @@ func templateMREventMessage(gitlabEvent GitlabMergeRequestEvent, fileName string
 func templateNoteEventMessage(gitlabEvent GitlabNoteEvent, fileName string) (string, error) {
 	template, err := prepareTemplate(gitlabEvent.ObjectKind, fileName)
 	if err != nil {
-		log.Error("Error while preparing template for event. Error: ", err)
 		return "", err
 	}
 
@@ -85,7 +82,6 @@ func templateNoteEventMessage(gitlabEvent GitlabNoteEvent, fileName string) (str
 func templatePipelineEventMessage(gitlabEvent GitlabPipelineEvent, fileName string) (string, error) {
 	template, err := prepareTemplate(gitlabEvent.ObjectKind, fileName)
 	if err != nil {
-		log.Error("Error while preparing template for event. Error: ", err)
 		return "", err
 	}
 
@@ -102,7 +98,6 @@ func templatePipelineEventMessage(gitlabEvent GitlabPipelineEvent, fileName stri
 func templatePushEventMessage(gitlabEvent GitlabPushEvent, fileName string) (string, error) {
 	template, err := prepareTemplate(gitlabEvent.ObjectKind, fileName)
 	if err != nil {
-		log.Error("Error while preparing template for event. Error: ", err)
 		return "", err
 	}
 
