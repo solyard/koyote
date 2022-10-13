@@ -10,7 +10,7 @@ import (
 func main() {
 	config.LoadConfig()
 	if config.GlobalAppConfig.Redis.Enabled {
-		redis.ConnectToRedis()
+		go redis.ConnectToRedis()
 	}
 	go telegram.StartBot()
 	api.StartPolling()

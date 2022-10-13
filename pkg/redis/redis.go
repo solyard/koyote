@@ -2,15 +2,14 @@ package redis
 
 import (
 	"context"
-	"crypto/rand"
 	"fmt"
-	"math/big"
+	"strings"
 	"time"
 
 	"github.com/go-redis/redis/v8"
 	log "github.com/gookit/slog"
-	"github.com/jasonlvhit/gocron"
 	"github.com/koyote/pkg/config"
+	"github.com/koyote/pkg/telegram"
 )
 
 var ctx = context.Background()
@@ -18,7 +17,7 @@ var redisClient *redis.Client
 
 func ConnectToRedis() {
 	redisClient = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     fmt.Sprintf("%v:%v", config.GlobalAppConfig.Redis.Host, config.GlobalAppConfig.Redis.Port),
 		Password: "",
 		DB:       0,
 	})
@@ -28,24 +27,36 @@ func ConnectToRedis() {
 		log.Fatal("Error while connect to redis. Error: ", err)
 	}
 
-	log.Info("Redis connection established!")
+	sub := redisClient.Subscribe(ctx, "events")
+	defer sub.Close()
 
-	cronInterval := config.GlobalAppConfig.Redis.CheckUnsendedEventsInterval
+	log.Info("Redis connection established! Subscribed for EVENTS channel!")
+	ch := sub.Channel()
 
-	gocron.NewJob(uint64(cronInterval) * uint64(time.Second)).Do(EventScheduleCheckAndResendToTelegram)
-}
-
-func SaveEventMessageToCache(chatID int64, message string) {
-	randomKey, err := rand.Int(rand.Reader, big.NewInt(100))
-	cacheTTL := config.GlobalAppConfig.Redis.UnsendendTaskTTL
-	redisClient.Set(ctx, fmt.Sprintf("%v-%v", string(chatID), randomKey), message, time.Duration(cacheTTL)*time.Second)
-	if err != nil {
-		log.Error("Error while saving task into redis. Message can be lost. Error: ", err)
-		return
+	for msg := range ch {
+		_, err = config.RedisCB.Execute(func() (interface{}, error) {
+			result, err := ResendMessageToTelegram(msg)
+			if err != nil {
+				return result, err
+			}
+			return result, nil
+		})
 	}
+
 }
 
-func EventScheduleCheckAndResendToTelegram(chatID int64) {
-	log.Info("STUB for event task iteration from redis")
-	return
+func PublishEventToRedisChannel(message string) {
+	redisClient.Publish(ctx, "events", message)
+}
+
+func ResendMessageToTelegram(msg *redis.Message) (bool, error) {
+	eventMessage := strings.SplitAfter(msg.Payload, "|")
+	chatID := strings.ReplaceAll(strings.ReplaceAll(eventMessage[0], "|", ""), "chatID:", "")
+	message := strings.Replace(eventMessage[1], "message:", "", 1)
+	err := telegram.SendEventMessage(chatID, message)
+	if err != nil {
+		return false, err
+	}
+
+	return true, nil
 }
