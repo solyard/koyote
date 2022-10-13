@@ -16,7 +16,7 @@
 # TL;DR
 Run Koyote as Binary
 ```
-KOYOTE_API_PORT=8081 ./koyote 
+KOYOTE_API_PORT=8081 KOYOTE_TELEGRAM_BOT_TOKEN=abc:11223344 ./koyote 
 ```
 
 Run Koyote with Docker:
