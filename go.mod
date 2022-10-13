@@ -7,8 +7,8 @@ require (
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gookit/slog v0.3.3
 	github.com/gorilla/mux v1.8.0
-	github.com/jasonlvhit/gocron v0.0.1
 	github.com/mymmrac/telego v0.16.1
+	github.com/sony/gobreaker v0.5.0
 )
 
 require (

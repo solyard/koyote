@@ -3,9 +3,10 @@ package events
 import (
 	"encoding/json"
 	"fmt"
-	"strconv"
 
 	log "github.com/gookit/slog"
+	"github.com/koyote/pkg/config"
+	"github.com/koyote/pkg/redis"
 	"github.com/koyote/pkg/telegram"
 )
 
@@ -72,19 +73,21 @@ func EventMatcher(eventJSON []byte, chatID string) {
 		return
 	}
 
-	chatIDInt, err := strconv.Atoi(chatID)
-	if err != nil {
-		log.Error("Error while convert chat ID to INT: %v", err)
-		return
-	}
-
 	eventMessage, err := event.TemplateMessage()
 	if err != nil {
 		log.Error("Error while templating event from received message. Error: ", err)
 		return
 	}
 
-	telegram.SendEventMessage(int64(chatIDInt), eventMessage)
+	err = telegram.SendEventMessage(chatID, eventMessage)
+	if err != nil && config.GlobalAppConfig.Redis.Enabled {
+		log.Error("Error while sending message to telegram. Save task in Redis. Error: ", err)
+		redis.PublishEventToRedisChannel(fmt.Sprintf("chatID:%v|message:%v", chatID, eventMessage))
+		return
+	} else if err != nil {
+		log.Error("Error while sending message to telegram. Redis disabled so you missed this message in telegram. Error: ", err)
+		return
+	}
 }
 
 func eventComparator(eventType string, data []byte) (Event, error) {

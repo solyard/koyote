@@ -1,11 +1,11 @@
 package telegram
 
 import (
+	"strconv"
+
 	log "github.com/gookit/slog"
 	"github.com/koyote/pkg/config"
-	"github.com/koyote/pkg/redis"
 	"github.com/mymmrac/telego"
-	tu "github.com/mymmrac/telego/telegoutil"
 )
 
 var Bot *telego.Bot
@@ -25,23 +25,24 @@ func StartBot() {
 	defer bot.StopLongPulling()
 }
 
-func SendEventMessage(chatID int64, eventMessage string) {
+func SendEventMessage(chatID string, eventMessage string) error {
+	chatIDInt, err := strconv.Atoi(chatID)
+	if err != nil {
+		return err
+	}
 	log.Info("Received event message. Message: ", eventMessage)
-	_, err := Bot.SendMessage(
+	_, err = Bot.SendMessage(
 		&telego.SendMessageParams{
-			ChatID:                tu.ID(chatID),
+			ChatID:                telego.ChatID{ID: int64(chatIDInt)},
 			Text:                  eventMessage,
 			ParseMode:             "HTML",
 			DisableWebPagePreview: true,
 		},
 	)
 
-	if err != nil && config.GlobalAppConfig.Redis.Enabled {
-		log.Error("Error while sending message to telegram. Save task in Redis. Error: ", err)
-		redis.SaveEventMessageToCache(chatID, eventMessage)
-		return
-	} else if err != nil {
-		log.Error("Error while sending message to telegram. Redis disabled so you missed this message in telegram. Error: ", err)
-		return
+	if err != nil {
+		return err
+	} else {
+		return nil
 	}
 }
