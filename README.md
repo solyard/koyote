@@ -21,12 +21,32 @@ KOYOTE_API_PORT=8081 ./koyote
 
 Run Koyote with Docker:
 ```
-export KOYOTE_API_PORT=8081
-docker run -p $KOYOTE_API_PORT:KOYOTE_API_PORT koyote:v0.1 -e KOYOTE_API_PORT=$KOYOTE_API_PORT
+docker run -p 8081:8081 koyote:v0.1 -e KOYOTE_API_PORT=8081 -e KOYOTE_TELEGRAM_BOT_TOKEN=abc:11223344
 ```
 
 # How Koyote works
 
+1. Koyote receive the event from Gitlab
+2. Koyote trying to parse responce from API to known models
+3. Koyote template message for telegram notification
+4. Koyote send the message to telegram chat or channel depends on ID that received from WebHook URL
+
 # Gitlab configuration
 
+1. Open your project in Gitlab and go to Settings -> Webhooks
+2. Check the triggers that you need to receive in Telegram
+3. Insert URL for example: http://koyote/notify/<chat_id>
+4. Press the button Add Webhook at the bottom of the page
+5. At the bottom of the page, you can see a new webhook. Try to send a test event with the button "Test" and select event that you want to receive
+
+
 # Telegram configuration
+1. Go to the @BotFather
+2. To create the Bot follow the instructions
+3. Get Bot API TOKEN and forward it to Koyote with ENV variable KOYOTE_TELEGRAM_BOT_TOKEN
+4. Enjoy :)
+
+# ROADMAP
+- [ ] Improve stability and fix the codestyle
+- [ ] Implement a normal logic for taskpooler
+- [ ] ...
