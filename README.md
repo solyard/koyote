@@ -33,21 +33,21 @@ docker run -p 8081:8081 koyote:v0.1 -e KOYOTE_API_PORT=8081 -e KOYOTE_TELEGRAM_B
 # Koyote params list
 |Parameter|Description|Default Value|
 |--|--|--|
-|KOYOTE_API_PORT|PORT for Koyote to receive the events from Gitlab| 8081|
-|KOYOTE_TELEGRAM_BOT_TOKEN| Bot token for telegram from @BotFather | empty (required)|
-|KOYOTE_ENABLE_JOB_NOTIFICATION|Enable notification to telegram for JOB event |false|
-|KOYOTE_ENABLE_MR_NOTIFICATION|Enable notification to telegram for MERGE REQUEST event |true|
-|KOYOTE_ENABLE_NOTE_NOTIFICATION|Enable notification to telegram for NOTE event |false|
-|KOYOTE_ENABLE_PIPELINE_NOTIFICATION|Enable notification to telegram for PIPELINE event |true|
-|KOYOTE_ENABLE_PUSH_NOTIFICATION|Enable notification to telegram for PUSH event |false|
-|KOYOTE_ENABLE_TAG_PUSH_NOTIFICATION|Enable notification to telegram for TAG PUSH event |false|
-|KOYOTE_REDIS_ENABLED|Enable Redis for Event pooling if Telegram cannot be reached/whatever|false|
-|KOYOTE_REDIS_CHECK_UNSENDED_EVENTS_INTEVAL|Interval (in seconds) to check for unsended event to Telegram|empty|
-|KOYOTE_REDIS_UNSENDED_TASK_TTL|Time in seconds to expiration for unsended event to Telegram|empty|
-|KOYOTE_REDIS_INSTANCE_URI|Redis instance host|empty|
-|KOYOTE_REDIS_INSTANCE_PORT|Redis instance port|empty|
-|KOYOTE_REDIS_USERNAME|Username for Redis (if not default 'root')|empty|
-|KOYOTE_REDIS_PASSWORD|Password for Redis|empty|
+|`KOYOTE_API_PORT`|PORT for Koyote to receive the events from Gitlab| 8081|
+|`KOYOTE_TELEGRAM_BOT_TOKEN`| Bot token for telegram from @BotFather | empty (required)|
+|`KOYOTE_ENABLE_JOB_NOTIFICATION`|Enable notification to telegram for JOB event |false|
+|`KOYOTE_ENABLE_MR_NOTIFICATION`|Enable notification to telegram for MERGE REQUEST event |true|
+|`KOYOTE_ENABLE_NOTE_NOTIFICATION`|Enable notification to telegram for NOTE event |false|
+|`KOYOTE_ENABLE_PIPELINE_NOTIFICATION`|Enable notification to telegram for PIPELINE event |true|
+|`KOYOTE_ENABLE_PUSH_NOTIFICATION`|Enable notification to telegram for PUSH event |false|
+|`KOYOTE_ENABLE_TAG_PUSH_NOTIFICATION`|Enable notification to telegram for TAG PUSH event |false|
+|`KOYOTE_REDIS_ENABLED`|Enable Redis for Event pooling if Telegram cannot be reached/whatever|false|
+|`KOYOTE_REDIS_CHECK_UNSENDED_EVENTS_INTEVAL`|Interval (in seconds) to check for unsended event to Telegram|empty|
+|`KOYOTE_REDIS_UNSENDED_TASK_TTL`|Time in seconds to expiration for unsended event to Telegram|empty|
+|`KOYOTE_REDIS_INSTANCE_URI`|Redis instance host|empty|
+|`KOYOTE_REDIS_INSTANCE_PORT`|Redis instance port|empty|
+|`KOYOTE_REDIS_USERNAME`|Username for Redis (if not default 'root')|empty|
+|`KOYOTE_REDIS_PASSWORD`|Password for Redis|empty|
 # Gitlab configuration
 
 1. Open your project in Gitlab and go to Settings -> Webhooks
