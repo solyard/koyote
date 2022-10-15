@@ -69,5 +69,12 @@ docker run -p 8081:8081 koyote:v0.1 -e KOYOTE_API_PORT=8081 -e KOYOTE_TELEGRAM_B
 - [ ] ...
 
 
+# For what this bot?
+
+We faced the problem from developers that spends a lot of time notifying the team about new MR requests or notify about failed builds and pipelines in the development chat. 
+So I created this bot to make notifications more quickly and automated. This bot makes helping our developers not spend time notifying others manually and resending asks about new MR's to other developers. Thats all. 
+
+While testing this bot in my projects for a month and not founded a normal realization of bot like mine i decided to create another community version for developers that looking for something to automate notifying process.
+
 <p align="center"><a href="https://www.flaticon.com/ru/free-icons/" title="волк иконки">Logo from Freepik - Flaticon</a></p>
 
