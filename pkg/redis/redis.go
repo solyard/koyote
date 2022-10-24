@@ -18,7 +18,7 @@ var redisClient *redis.Client
 func ConnectToRedis() {
 	redisClient = redis.NewClient(&redis.Options{
 		Addr:     fmt.Sprintf("%v:%v", config.GlobalAppConfig.Redis.Host, config.GlobalAppConfig.Redis.Port),
-		Password: "",
+		Password: config.GlobalAppConfig.Redis.Auth.Password,
 		DB:       0,
 	})
 
@@ -41,6 +41,9 @@ func ConnectToRedis() {
 			}
 			return result, nil
 		})
+		if err != nil {
+			log.Error("Error while initialize Circuit Breaker for Redis instance. Error: ", err)
+		}
 	}
 
 }
@@ -57,6 +60,5 @@ func ResendMessageToTelegram(msg *redis.Message) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-
 	return true, nil
 }

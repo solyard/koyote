@@ -23,15 +23,15 @@ type ApplicationConfig struct {
 		TelegramBotToken string `env:"KOYOTE_TELEGRAM_BOT_TOKEN,required"`
 	}
 	Events struct {
-		Job          bool `env:"KOYOTE_ENABLE_JOB_NOTIFICATION" envDefault:false`
+		Job          bool `env:"KOYOTE_ENABLE_JOB_NOTIFICATION"`
 		MergeRequest bool `env:"KOYOTE_ENABLE_MR_NOTIFICATION" envDefault:true`
-		Note         bool `env:"KOYOTE_ENABLE_NOTE_NOTIFICATION envDefault:false`
-		Pipeline     bool `env:"KOYOTE_ENABLE_PIPELINE_NOTIFICATION envDefault:true`
-		Push         bool `env:"KOYOTE_ENABLE_PUSH_NOTIFICATION" envDefault:false`
-		TagPush      bool `env:"KOYOTE_ENABLE_TAG_PUSH_NOTIFICATION" envDefault:false`
+		Note         bool `env:"KOYOTE_ENABLE_NOTE_NOTIFICATION"`
+		Pipeline     bool `env:"KOYOTE_ENABLE_PIPELINE_NOTIFICATION" envDefault:true`
+		Push         bool `env:"KOYOTE_ENABLE_PUSH_NOTIFICATION"`
+		TagPush      bool `env:"KOYOTE_ENABLE_TAG_PUSH_NOTIFICATION"`
 	}
 	Redis struct {
-		Enabled                     bool   `env:"KOYOTE_REDIS_ENABLED" envDefault:false`
+		Enabled                     bool   `env:"KOYOTE_REDIS_ENABLED"`
 		CheckUnsendedEventsInterval int    `env:"KOYOTE_REDIS_CHECK_UNSENDED_EVENTS_INTEVAL,unset"`
 		UnsendendTaskTTL            int    `env:"KOYOTE_REDIS_UNSENDED_TASK_TTL,unset"`
 		Host                        string `env:"KOYOTE_REDIS_INSTANCE_URI,unset"`

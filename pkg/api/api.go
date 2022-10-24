@@ -12,14 +12,10 @@ import (
 )
 
 func returnError(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	http.Error(w, "Please add chatID like in example: /notify/123123123123", http.StatusNotFound)
 }
 
 func receiveEventJSON(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	vars := mux.Vars(r)
 
 	body, err := ioutil.ReadAll(r.Body)
@@ -27,7 +23,10 @@ func receiveEventJSON(w http.ResponseWriter, r *http.Request) {
 		log.Error("Error while read payload from request to Koyote. Error: ", err)
 	}
 
-	events.EventMatcher(body, vars["chat_id"])
+	err = events.EventMatcher(body, vars["chat_id"])
+	if err != nil {
+		http.Error(w, fmt.Sprint("Error while compare Event to template. Error: ", err), http.StatusBadRequest)
+	}
 }
 
 func StartPolling() {

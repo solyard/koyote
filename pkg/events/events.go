@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	log "github.com/gookit/slog"
 	"github.com/koyote/pkg/config"
 	"github.com/koyote/pkg/redis"
 	"github.com/koyote/pkg/telegram"
@@ -59,60 +58,50 @@ func (e GitlabPushEvent) TemplateMessage() (string, error) {
 	return result, nil
 }
 
-func EventMatcher(eventJSON []byte, chatID string) {
+func EventMatcher(eventJSON []byte, chatID string) error {
 	var receivedEventType GitlabEventTypeDetector
 	err := json.Unmarshal(eventJSON, &receivedEventType)
 	if err != nil {
-		log.Error("Cannot unmarshal received event to GitlabTypeDetector structure. Error: ", err)
-		return
+		return err
 	}
 
 	event, err := eventComparator(receivedEventType.ObjectKind, eventJSON)
 	if err != nil {
-		log.Error("Error while compare event with struct", err)
-		return
+		return err
 	}
 
 	eventMessage, err := event.TemplateMessage()
 	if err != nil {
-		log.Error("Error while templating event from received message. Error: ", err)
-		return
+		return err
 	}
 
 	err = telegram.SendEventMessage(chatID, eventMessage)
 	if err != nil && config.GlobalAppConfig.Redis.Enabled {
-		log.Error("Error while sending message to telegram. Save task in Redis. Error: ", err)
 		redis.PublishEventToRedisChannel(fmt.Sprintf("chatID:%v|message:%v", chatID, eventMessage))
-		return
+		return err
 	} else if err != nil {
-		log.Error("Error while sending message to telegram. Redis disabled so you missed this message in telegram. Error: ", err)
-		return
+		return err
 	}
+
+	return nil
 }
 
 func eventComparator(eventType string, data []byte) (Event, error) {
+	var event Event
 	switch eventType {
 	case "build":
-		var gitlabEvent GitlabJobEvent
-		err := json.Unmarshal(data, &gitlabEvent)
-		return gitlabEvent, err
+		event = &GitlabJobEvent{}
 	case "merge_request":
-		var gitlabEvent GitlabMergeRequestEvent
-		err := json.Unmarshal(data, &gitlabEvent)
-		return gitlabEvent, err
+		event = &GitlabMergeRequestEvent{}
 	case "note":
-		var gitlabEvent GitlabNoteEvent
-		err := json.Unmarshal(data, &gitlabEvent)
-		return gitlabEvent, err
+		event = &GitlabNoteEvent{}
 	case "pipeline":
-		var gitlabEvent GitlabPipelineEvent
-		err := json.Unmarshal(data, &gitlabEvent)
-		return gitlabEvent, err
+		event = &GitlabPipelineEvent{}
 	case "push":
-		var gitlabEvent GitlabPushEvent
-		err := json.Unmarshal(data, &gitlabEvent)
-		return gitlabEvent, err
+		event = &GitlabPushEvent{}
 	default:
 		return nil, fmt.Errorf("Unknown event type: %s", eventType)
 	}
+
+	return event, json.Unmarshal(data, &event)
 }
