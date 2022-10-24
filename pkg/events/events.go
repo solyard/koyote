@@ -7,6 +7,7 @@ import (
 	"github.com/koyote/pkg/config"
 	"github.com/koyote/pkg/redis"
 	"github.com/koyote/pkg/telegram"
+	"github.com/pkg/errors"
 )
 
 type Event interface {
@@ -16,7 +17,7 @@ type Event interface {
 func (e GitlabJobEvent) TemplateMessage() (string, error) {
 	result, err := templateJobEventMessage(e, "job.tpl")
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "Error while templating message!")
 	}
 
 	return result, nil
@@ -25,7 +26,7 @@ func (e GitlabJobEvent) TemplateMessage() (string, error) {
 func (e GitlabMergeRequestEvent) TemplateMessage() (string, error) {
 	result, err := templateMREventMessage(e, "merge_request.tpl")
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "Error while templating message!")
 	}
 
 	return result, nil
@@ -34,7 +35,7 @@ func (e GitlabMergeRequestEvent) TemplateMessage() (string, error) {
 func (e GitlabNoteEvent) TemplateMessage() (string, error) {
 	result, err := templateNoteEventMessage(e, "note.tpl")
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "Error while templating message!")
 	}
 
 	return result, nil
@@ -43,7 +44,7 @@ func (e GitlabNoteEvent) TemplateMessage() (string, error) {
 func (e GitlabPipelineEvent) TemplateMessage() (string, error) {
 	result, err := templatePipelineEventMessage(e, "pipeline.tpl")
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "Error while templating message!")
 	}
 
 	return result, nil
@@ -52,7 +53,7 @@ func (e GitlabPipelineEvent) TemplateMessage() (string, error) {
 func (e GitlabPushEvent) TemplateMessage() (string, error) {
 	result, err := templatePushEventMessage(e, "push.tpl")
 	if err != nil {
-		return "", err
+		return "", errors.Wrap(err, "Error while templating message!")
 	}
 
 	return result, nil
@@ -62,25 +63,25 @@ func EventMatcher(eventJSON []byte, chatID string) error {
 	var receivedEventType GitlabEventTypeDetector
 	err := json.Unmarshal(eventJSON, &receivedEventType)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "Error while templating message!")
 	}
 
 	event, err := eventComparator(receivedEventType.ObjectKind, eventJSON)
 	if err != nil {
-		return err
+		return errors.Wrap(err, "Error while templating message!")
 	}
 
 	eventMessage, err := event.TemplateMessage()
 	if err != nil {
-		return err
+		return errors.Wrap(err, "Error while templating message!")
 	}
 
 	err = telegram.SendEventMessage(chatID, eventMessage)
 	if err != nil && config.GlobalAppConfig.Redis.Enabled {
 		redis.PublishEventToRedisChannel(fmt.Sprintf("chatID:%v|message:%v", chatID, eventMessage))
-		return err
+		return errors.Wrap(err, "Erro while send event to Telegram. Trying to save in Redis")
 	} else if err != nil {
-		return err
+		return errors.Wrap(err, "Error while send event to Telegram and Redis was disabled. Event may be lost :( ")
 	}
 
 	return nil

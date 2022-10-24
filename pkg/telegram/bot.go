@@ -6,6 +6,7 @@ import (
 	log "github.com/gookit/slog"
 	"github.com/koyote/pkg/config"
 	"github.com/mymmrac/telego"
+	"github.com/pkg/errors"
 )
 
 var Bot *telego.Bot
@@ -40,5 +41,5 @@ func SendEventMessage(chatID string, eventMessage string) error {
 		},
 	)
 
-	return err
+	return errors.Wrap(err, "Error while sending message to Telegram")
 }

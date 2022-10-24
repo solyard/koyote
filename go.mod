@@ -8,7 +8,9 @@ require (
 	github.com/gookit/slog v0.3.3
 	github.com/gorilla/mux v1.8.0
 	github.com/mymmrac/telego v0.16.1
+	github.com/pkg/errors v0.9.1
 	github.com/sony/gobreaker v0.5.0
+	gopkg.in/errgo.v2 v2.1.0
 )
 
 require (
