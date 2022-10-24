@@ -40,9 +40,5 @@ func SendEventMessage(chatID string, eventMessage string) error {
 		},
 	)
 
-	if err != nil {
-		return err
-	} else {
-		return nil
-	}
+	return err
 }

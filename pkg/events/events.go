@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	log "github.com/gookit/slog"
 	"github.com/koyote/pkg/config"
 	"github.com/koyote/pkg/redis"
 	"github.com/koyote/pkg/telegram"
@@ -59,35 +58,32 @@ func (e GitlabPushEvent) TemplateMessage() (string, error) {
 	return result, nil
 }
 
-func EventMatcher(eventJSON []byte, chatID string) {
+func EventMatcher(eventJSON []byte, chatID string) error {
 	var receivedEventType GitlabEventTypeDetector
 	err := json.Unmarshal(eventJSON, &receivedEventType)
 	if err != nil {
-		log.Error("Cannot unmarshal received event to GitlabTypeDetector structure. Error: ", err)
-		return
+		return err
 	}
 
 	event, err := eventComparator(receivedEventType.ObjectKind, eventJSON)
 	if err != nil {
-		log.Error("Error while compare event with struct", err)
-		return
+		return err
 	}
 
 	eventMessage, err := event.TemplateMessage()
 	if err != nil {
-		log.Error("Error while templating event from received message. Error: ", err)
-		return
+		return err
 	}
 
 	err = telegram.SendEventMessage(chatID, eventMessage)
 	if err != nil && config.GlobalAppConfig.Redis.Enabled {
-		log.Error("Error while sending message to telegram. Save task in Redis. Error: ", err)
 		redis.PublishEventToRedisChannel(fmt.Sprintf("chatID:%v|message:%v", chatID, eventMessage))
-		return
+		return err
 	} else if err != nil {
-		log.Error("Error while sending message to telegram. Redis disabled so you missed this message in telegram. Error: ", err)
-		return
+		return err
 	}
+
+	return nil
 }
 
 func eventComparator(eventType string, data []byte) (Event, error) {

@@ -57,6 +57,5 @@ func ResendMessageToTelegram(msg *redis.Message) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-
 	return true, nil
 }

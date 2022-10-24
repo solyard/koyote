@@ -27,7 +27,10 @@ func receiveEventJSON(w http.ResponseWriter, r *http.Request) {
 		log.Error("Error while read payload from request to Koyote. Error: ", err)
 	}
 
-	events.EventMatcher(body, vars["chat_id"])
+	err = events.EventMatcher(body, vars["chat_id"])
+	if err != nil {
+		http.Error(w, fmt.Sprint("Error while compare Event to template. Error: ", err), http.StatusBadRequest)
+	}
 }
 
 func StartPolling() {
