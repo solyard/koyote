@@ -87,28 +87,21 @@ func EventMatcher(eventJSON []byte, chatID string) error {
 }
 
 func eventComparator(eventType string, data []byte) (Event, error) {
+	var event Event
 	switch eventType {
 	case "build":
-		var gitlabEvent GitlabJobEvent
-		err := json.Unmarshal(data, &gitlabEvent)
-		return gitlabEvent, err
+		event = &GitlabJobEvent{}
 	case "merge_request":
-		var gitlabEvent GitlabMergeRequestEvent
-		err := json.Unmarshal(data, &gitlabEvent)
-		return gitlabEvent, err
+		event = &GitlabMergeRequestEvent{}
 	case "note":
-		var gitlabEvent GitlabNoteEvent
-		err := json.Unmarshal(data, &gitlabEvent)
-		return gitlabEvent, err
+		event = &GitlabNoteEvent{}
 	case "pipeline":
-		var gitlabEvent GitlabPipelineEvent
-		err := json.Unmarshal(data, &gitlabEvent)
-		return gitlabEvent, err
+		event = &GitlabPipelineEvent{}
 	case "push":
-		var gitlabEvent GitlabPushEvent
-		err := json.Unmarshal(data, &gitlabEvent)
-		return gitlabEvent, err
+		event = &GitlabPushEvent{}
 	default:
 		return nil, fmt.Errorf("Unknown event type: %s", eventType)
 	}
+
+	return event, json.Unmarshal(data, &event)
 }
