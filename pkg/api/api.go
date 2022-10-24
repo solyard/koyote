@@ -12,14 +12,10 @@ import (
 )
 
 func returnError(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	http.Error(w, "Please add chatID like in example: /notify/123123123123", http.StatusNotFound)
 }
 
 func receiveEventJSON(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
-
 	vars := mux.Vars(r)
 
 	body, err := ioutil.ReadAll(r.Body)

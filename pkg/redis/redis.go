@@ -41,6 +41,9 @@ func ConnectToRedis() {
 			}
 			return result, nil
 		})
+		if err != nil {
+			log.Error("Error while initialize Circuit Breaker for Redis instance. Error: ", err)
+		}
 	}
 
 }
