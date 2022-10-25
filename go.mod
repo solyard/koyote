@@ -3,14 +3,13 @@ module github.com/koyote
 go 1.19
 
 require (
+	github.com/avast/retry-go/v4 v4.3.0
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/go-redis/redis/v8 v8.11.5
 	github.com/gookit/slog v0.3.3
 	github.com/gorilla/mux v1.8.0
 	github.com/mymmrac/telego v0.16.1
 	github.com/pkg/errors v0.9.1
-	github.com/sony/gobreaker v0.5.0
-	gopkg.in/errgo.v2 v2.1.0
 )
 
 require (

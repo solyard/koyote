@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/avast/retry-go/v4"
 	"github.com/go-redis/redis/v8"
 	log "github.com/gookit/slog"
 	"github.com/koyote/pkg/config"
@@ -34,31 +35,29 @@ func ConnectToRedis() {
 	ch := sub.Channel()
 
 	for msg := range ch {
-		_, err = config.RedisCB.Execute(func() (interface{}, error) {
-			result, err := ResendMessageToTelegram(msg)
-			if err != nil {
-				return result, err
-			}
-			return result, nil
-		})
-		if err != nil {
-			log.Error("Error while initialize Circuit Breaker for Redis instance. Error: ", err)
-		}
+		log.Info("Received Event message from Redis. Trying to resend it to Telegram")
+		ResendMessageToTelegram(msg)
 	}
 
 }
 
 func PublishEventToRedisChannel(message string) {
+	log.Info("Saving received event to Redis")
 	redisClient.Publish(ctx, "events", message)
 }
 
-func ResendMessageToTelegram(msg *redis.Message) (bool, error) {
+func ResendMessageToTelegram(msg *redis.Message) {
 	eventMessage := strings.SplitAfter(msg.Payload, "|")
 	chatID := strings.ReplaceAll(strings.ReplaceAll(eventMessage[0], "|", ""), "chatID:", "")
 	message := strings.Replace(eventMessage[1], "message:", "", 1)
-	err := telegram.SendEventMessage(chatID, message)
+
+	err := retry.Do(
+		func() error {
+			err := telegram.SendEventMessage(chatID, message)
+			return err
+		})
 	if err != nil {
-		return false, err
+		log.Error("Resending message failed. Event probably lost!")
 	}
-	return true, nil
+
 }
