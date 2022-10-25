@@ -9,7 +9,7 @@
 
 
 # FYI
- 🦊 Koyote (no it's not misspelling) it's a simple and fast telegram bot that can integrate with your Gitlab (Cloud or SelfHosted) to notify you about events that happen in your project
+ 🦊 Koyote (no it's not a misspelling) is a simple and fast telegram bot that integrates with your Gitlab (Cloud or SelfHosted) to notify you about events that happen in your project
 
 # TL;DR
 Run Koyote as Binary
@@ -24,10 +24,10 @@ docker run -p 8081:8081 koyote:v0.1 -e KOYOTE_API_PORT=8081 -e KOYOTE_TELEGRAM_B
 
 # How Koyote works
 
-1. Koyote receive the event from Gitlab
-2. Koyote trying to parse responce from API to known models
-3. Koyote template message for telegram notification
-4. Koyote send the message to telegram chat or channel depends on ID that received from WebHook URL
+1. Koyote receives the event from Gitlab
+2. Koyote tries to parse the responce from API to known models
+3. Koyote templates message for a telegram notification
+4. Koyote sends the message to a telegram chat or a channel depending on the ID that is received from the WebHook URL
 
 
 # Koyote params list
