@@ -31,7 +31,6 @@ func SendEventMessage(chatID string, eventMessage string) error {
 	if err != nil {
 		return err
 	}
-	log.Info("Received event message for Telegram")
 	_, err = Bot.SendMessage(
 		&telego.SendMessageParams{
 			ChatID:                telego.ChatID{ID: int64(chatIDInt)},

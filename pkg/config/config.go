@@ -1,20 +1,8 @@
 package config
 
 import (
-	"time"
-
 	"github.com/caarlos0/env/v6"
 	log "github.com/gookit/slog"
-	"github.com/sony/gobreaker"
-)
-
-var RedisCB = gobreaker.NewCircuitBreaker(
-	gobreaker.Settings{
-		Name:        "redis-circutit-breaker",
-		MaxRequests: 10,
-		Timeout:     10 * time.Second,
-		Interval:    10 * time.Second,
-	},
 )
 
 type ApplicationConfig struct {
