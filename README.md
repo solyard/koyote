@@ -2,14 +2,14 @@
   <img src="coyote.png" />
 </p>
 
-<p align="center"><b>Koyote - Fast Gitlab Event Notification for Telegram</b></p>
+<p align="center"><b>Koyote - Fast GitLab Event Notifications for Telegram</b></p>
 
 <hr>
 <p align="center"><img src="https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white"><img src="https://img.shields.io/badge/GitLab-330F63?style=for-the-badge&logo=gitlab&logoColor=white"><img src="https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white"></p>
 
 
 # FYI
- 🦊 Koyote (no it's not a misspelling) is a simple and fast telegram bot that integrates with your Gitlab (Cloud or SelfHosted) to notify you about events that happen in your project
+🦊 Koyote (no, it's not a misspelling) is a simple and fast Telegram bot that integrates with your GitLab (Cloud or Self-Hosted) to notify you about events that happen in your project.
 
 # TL;DR
 Run Koyote as Binary
@@ -24,57 +24,55 @@ docker run -p 8081:8081 koyote:v0.1 -e KOYOTE_API_PORT=8081 -e KOYOTE_TELEGRAM_B
 
 # How Koyote works
 
-1. Koyote receives the event from Gitlab
-2. Koyote tries to parse the responce from API to known models
-3. Koyote templates message for a telegram notification
-4. Koyote sends the message to a telegram chat or a channel depending on the ID that is received from the WebHook URL
+1. Koyote receives an event from GitLab
+2. Koyote tries to parse the response from the API to known models
+3. Koyote templates a message for a Telegram notification
+4. Koyote sends the message to a Telegram chat or channel depending on the ID that is received from the WebHook URL
 
 
-# Koyote params list
+# Koyote parameters
 |Parameter|Description|Default Value|
 |--|--|--|
-|`KOYOTE_API_PORT`|PORT for Koyote to receive the events from Gitlab| 8081|
-|`KOYOTE_TELEGRAM_BOT_TOKEN`| Bot token for telegram from @BotFather | empty (required)|
-|`KOYOTE_ENABLE_JOB_NOTIFICATION`|Enable notification to telegram for JOB event |false|
-|`KOYOTE_ENABLE_MR_NOTIFICATION`|Enable notification to telegram for MERGE REQUEST event |true|
-|`KOYOTE_ENABLE_NOTE_NOTIFICATION`|Enable notification to telegram for NOTE event |false|
-|`KOYOTE_ENABLE_PIPELINE_NOTIFICATION`|Enable notification to telegram for PIPELINE event |true|
-|`KOYOTE_ENABLE_PUSH_NOTIFICATION`|Enable notification to telegram for PUSH event |false|
-|`KOYOTE_ENABLE_TAG_PUSH_NOTIFICATION`|Enable notification to telegram for TAG PUSH event |false|
+|`KOYOTE_API_PORT`|Koyote web-server port| 8081|
+|`KOYOTE_TELEGRAM_BOT_TOKEN`|Telegram bot token from @BotFather| empty (required)|
+|`KOYOTE_ENABLE_JOB_NOTIFICATION`|Enable Telegram notification for JOB event|false|
+|`KOYOTE_ENABLE_MR_NOTIFICATION`|Enable Telegram notification for MERGE REQUEST event|true|
+|`KOYOTE_ENABLE_NOTE_NOTIFICATION`|Enable Telegram notification for NOTE event|false|
+|`KOYOTE_ENABLE_PIPELINE_NOTIFICATION`|Enable Telegram notification for PIPELINE event|true|
+|`KOYOTE_ENABLE_PUSH_NOTIFICATION`|Enable Telegram notification for PUSH event|false|
+|`KOYOTE_ENABLE_TAG_PUSH_NOTIFICATION`|Enable Telegram notification for TAG PUSH event|false|
 |`KOYOTE_REDIS_ENABLED`|Enable Redis for Event pooling if Telegram cannot be reached/whatever|false|
-|`KOYOTE_REDIS_CHECK_UNSENDED_EVENTS_INTEVAL`|Interval (in seconds) to check for unsended event to Telegram|empty|
-|`KOYOTE_REDIS_UNSENDED_TASK_TTL`|Time in seconds to expiration for unsended event to Telegram|empty|
+|`KOYOTE_REDIS_CHECK_UNSENDED_EVENTS_INTEVAL`|Interval (in seconds) to check for unsent Telegram events|empty|
+|`KOYOTE_REDIS_UNSENDED_TASK_TTL`|Time in seconds for unsent Telegram events to expire|empty|
 |`KOYOTE_REDIS_INSTANCE_URI`|Redis instance host|empty|
 |`KOYOTE_REDIS_INSTANCE_PORT`|Redis instance port|empty|
-|`KOYOTE_REDIS_USERNAME`|Username for Redis (if not default 'root')|empty|
-|`KOYOTE_REDIS_PASSWORD`|Password for Redis|empty|
-# Gitlab configuration
+|`KOYOTE_REDIS_USERNAME`|Redis username (default 'root')|empty|
+|`KOYOTE_REDIS_PASSWORD`|Redis password|empty|
 
-1. Open your project in Gitlab and go to Settings -> Webhooks
-2. Check the triggers that you need to receive in Telegram
-3. Insert URL for example: http://koyote/notify/<chat_id>
-4. Press the button Add Webhook at the bottom of the page
-5. At the bottom of the page, you can see a new webhook. Try to send a test event with the button "Test" and select event that you want to receive
+# GitLab configuration
 
+1. Open your project in GitLab and go to Settings -> Webhooks
+2. Check the triggers that you want to receive in Telegram
+3. Insert the URL (e.g. `http://koyote/notify/<chat_id>`)
+4. Press the "Add Webhook" button at the bottom of the page
+5. At the bottom of the page, you can see the new webhook. Try sending a test event with the "Test" button and select the event you want to receive
 
 # Telegram configuration
 1. Go to the @BotFather
-2. To create the Bot follow the instructions
-3. Get Bot API TOKEN and forward it to Koyote with ENV variable KOYOTE_TELEGRAM_BOT_TOKEN
+2. Follow the instructions to create the bot
+3. Get the Bot API token and forward it to Koyote with the environment variable `KOYOTE_TELEGRAM_BOT_TOKEN`
 4. Enjoy :)
 
-# ROADMAP
+# Roadmap
 - [ ] Improve stability and fix the codestyle
 - [ ] Implement a normal logic for taskpooler
 - [ ] ...
 
+# What is this bot for?
 
-# For what this bot?
+We faced the problem of developers spending a lot of time notifying the team about new MR requests or failed builds and pipelines in the development chat. So I created this bot to make notifications faster and more automated. This bot helps our developers save time by not having to notify others manually and resend requests for new MRs to other developers. That's all.
 
-We faced the problem from developers that spends a lot of time notifying the team about new MR requests or notify about failed builds and pipelines in the development chat. 
-So I created this bot to make notifications more quickly and automated. This bot makes helping our developers not spend time notifying others manually and resending asks about new MR's to other developers. Thats all. 
-
-While testing this bot in my projects for a month and not founded a normal realization of bot like mine i decided to create another community version for developers that looking for something to automate notifying process.
+After testing this bot in my projects for a month and not finding a normal realization of a bot like mine, I decided to create a community version for developers who are looking for something to automate the notification process.
 
 <p align="center"><a href="https://www.flaticon.com/ru/free-icons/" title="волк иконки">Logo from Freepik - Flaticon</a></p>
 
