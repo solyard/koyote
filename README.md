@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="coyote.png" />
+  <img src="koyote.jpg" width="400" height="400"/>
 </p>
 
 <p align="center"><b>Koyote - Fast GitLab Event Notifications for Telegram</b></p>
@@ -74,5 +74,5 @@ We faced the problem of developers spending a lot of time notifying the team abo
 
 After testing this bot in my projects for a month and not finding a normal realization of a bot like mine, I decided to create a community version for developers who are looking for something to automate the notification process.
 
-<p align="center"><a href="https://www.flaticon.com/ru/free-icons/" title="волк иконки">Logo from Freepik - Flaticon</a></p>
+<p align="center">Logo by MJ 5.2 :)</p>
 
