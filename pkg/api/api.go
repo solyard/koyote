@@ -16,6 +16,7 @@ func returnError(w http.ResponseWriter, r *http.Request) {
 }
 
 func receiveEventJSON(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(r)
 
 	body, err := ioutil.ReadAll(r.Body)
@@ -23,7 +24,7 @@ func receiveEventJSON(w http.ResponseWriter, r *http.Request) {
 		log.Error("Error while read payload from request to Koyote. Error: ", err)
 	}
 
-	err = events.EventMatcher(body, vars["chat_id"])
+	err = events.EventMatcher(body, vars["chat_id"], vars["thread_id"])
 	if err != nil {
 		http.Error(w, fmt.Sprint("Error while compare Event to template. Error: ", err), http.StatusBadRequest)
 	}
@@ -32,6 +33,7 @@ func receiveEventJSON(w http.ResponseWriter, r *http.Request) {
 func StartPolling() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/notify/{chat_id}", receiveEventJSON).Methods("POST")
+	router.HandleFunc("/notify/{chat_id}/{thread_id}", receiveEventJSON).Methods("POST")
 	router.HandleFunc("/notify", returnError)
 
 	log.Info("Starting API on port", config.GlobalAppConfig.Global.ListenPort)
