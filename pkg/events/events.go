@@ -4,9 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	log "github.com/gookit/slog"
-	"github.com/koyote/pkg/config"
-	"github.com/koyote/pkg/redis"
 	"github.com/koyote/pkg/telegram"
 	"github.com/pkg/errors"
 )
@@ -60,7 +57,7 @@ func (e GitlabPushEvent) TemplateMessage() (string, error) {
 	return result, nil
 }
 
-func EventMatcher(eventJSON []byte, chatID string) error {
+func EventMatcher(eventJSON []byte, chatID, threadID string) error {
 	var receivedEventType GitlabEventTypeDetector
 	err := json.Unmarshal(eventJSON, &receivedEventType)
 	if err != nil {
@@ -77,12 +74,14 @@ func EventMatcher(eventJSON []byte, chatID string) error {
 		return errors.Wrap(err, "Error while templating message!")
 	}
 
-	err = telegram.SendEventMessage(chatID, eventMessage)
-	if err != nil && config.GlobalAppConfig.Redis.Enabled {
-		redis.PublishEventToRedisChannel(fmt.Sprintf("chatID:%v|message:%v", chatID, eventMessage))
-		log.Warn("Error while send event to Telegram. Trying to save in Redis")
-	} else if err != nil {
-		return errors.Wrap(err, "Error while send event to Telegram and Redis was disabled. Event may be lost :( ")
+	if threadID == "" {
+		err = telegram.SendEventMessage(chatID, eventMessage)
+	} else {
+		err = telegram.SendEventMessageToThread(chatID, threadID, eventMessage)
+	}
+
+	if err != nil {
+		return errors.Wrap(err, "Error while send event to Telegram. Event may be lost :( ")
 	}
 
 	return nil

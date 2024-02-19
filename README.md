@@ -22,6 +22,14 @@ Run Koyote with Docker:
 docker run -p 8081:8081 koyote:v0.1 -e KOYOTE_API_PORT=8081 -e KOYOTE_TELEGRAM_BOT_TOKEN=abc:11223344
 ```
 
+# Chat Utils
+
+Bot now supports some commands:
+```
+/chatID - Return current chatID
+/threadID - Return current threadID (If 0 then you are in General Thread or chat without Threads support)
+```
+
 # How Koyote works
 
 1. Koyote receives an event from GitLab
@@ -41,19 +49,12 @@ docker run -p 8081:8081 koyote:v0.1 -e KOYOTE_API_PORT=8081 -e KOYOTE_TELEGRAM_B
 |`KOYOTE_ENABLE_PIPELINE_NOTIFICATION`|Enable Telegram notification for PIPELINE event|true|
 |`KOYOTE_ENABLE_PUSH_NOTIFICATION`|Enable Telegram notification for PUSH event|false|
 |`KOYOTE_ENABLE_TAG_PUSH_NOTIFICATION`|Enable Telegram notification for TAG PUSH event|false|
-|`KOYOTE_REDIS_ENABLED`|Enable Redis for Event pooling if Telegram cannot be reached/whatever|false|
-|`KOYOTE_REDIS_CHECK_UNSENDED_EVENTS_INTEVAL`|Interval (in seconds) to check for unsent Telegram events|empty|
-|`KOYOTE_REDIS_UNSENDED_TASK_TTL`|Time in seconds for unsent Telegram events to expire|empty|
-|`KOYOTE_REDIS_INSTANCE_URI`|Redis instance host|empty|
-|`KOYOTE_REDIS_INSTANCE_PORT`|Redis instance port|empty|
-|`KOYOTE_REDIS_USERNAME`|Redis username (default 'root')|empty|
-|`KOYOTE_REDIS_PASSWORD`|Redis password|empty|
 
 # GitLab configuration
 
 1. Open your project in GitLab and go to Settings -> Webhooks
 2. Check the triggers that you want to receive in Telegram
-3. Insert the URL (e.g. `http://koyote/notify/<chat_id>`)
+3. Insert the URL (e.g. `http://koyote/notify/<chat_id>/<topic_id>`) (topic_id optional field if you are using Telegram Topics)
 4. Press the "Add Webhook" button at the bottom of the page
 5. At the bottom of the page, you can see the new webhook. Try sending a test event with the "Test" button and select the event you want to receive
 
